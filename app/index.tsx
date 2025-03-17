@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F4FF',
+    padding: 1,
     paddingTop: 50,
   },
   reactLogo: {
@@ -76,8 +77,8 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 24,
-    padding: 20,
-    margin: 16,
+    padding: 16,
+    margin: 10,
     shadowColor: '#6C63FF',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
@@ -219,11 +220,11 @@ const styles = StyleSheet.create({
 });
 
 export default function Index() {
-  const [activeTab, setActiveTab] = useState('Progesterone');
+  const [activeTab, setActiveTab] = useState('Vitals');
   const fadeAnim = useState(new Animated.Value(0))[0];
   const [trackingData, setTrackingData] = useState({
-    progesterone: [20, 45, 28, 80, 99, 43, 50],
-    cortisol: [30, 55, 38, 70, 89, 53, 60],
+    Vitals: [20, 45, 28, 80, 99, 43, 50],
+    BloodPressure: [30, 55, 38, 70, 89, 53, 60],
     weight: [],
     mood: [],
     symptoms: [],
@@ -269,7 +270,7 @@ export default function Index() {
     const weightValue = parseFloat(newData.weight) || 0;
     setTrackingData(prevData => ({
       ...prevData,
-      progesterone: [...prevData.progesterone, weightValue],
+      Vitals: [...prevData.Vitals, weightValue],
       weight: [...prevData.weight, weightValue],
       mood: [...prevData.mood, newData.mood],
       symptoms: [...prevData.symptoms, newData.symptoms],
@@ -279,8 +280,8 @@ export default function Index() {
 
   // Get the current dataset based on active tab
   const getCurrentDataset = () => {
-    return activeTab.toLowerCase() === 'progesterone' ? 
-      trackingData.progesterone : trackingData.cortisol;
+    return activeTab.toLowerCase() === 'Vitals' ? 
+      trackingData.Vitals : trackingData.BloodPressure;
   };
 
   return (
@@ -323,14 +324,14 @@ export default function Index() {
         style={styles.card}>
         <View style={styles.tabContainer}>
           <TouchableOpacity 
-            style={[styles.tab, activeTab === 'Progesterone' && styles.activeTab]}
-            onPress={() => setActiveTab('Progesterone')}>
-            <Text style={[styles.tabText, styles.activeTabText]}>Progesterone</Text>
+            style={[styles.tab, activeTab === 'Vitals' && styles.activeTab]}
+            onPress={() => setActiveTab('Vitals')}>
+            <Text style={[styles.tabText, styles.activeTabText]}>Vitals</Text>
           </TouchableOpacity>
           <TouchableOpacity 
-            style={[styles.tab, activeTab === 'Cortisol' && styles.activeTab]}
-            onPress={() => setActiveTab('Cortisol')}>
-            <Text style={styles.tabText}>Cortisol</Text>
+            style={[styles.tab, activeTab === 'BloodPressure' && styles.activeTab]}
+            onPress={() => setActiveTab('BloodPressure')}>
+            <Text style={styles.tabText}>BloodPressure</Text>
           </TouchableOpacity>
         </View>
 
@@ -339,7 +340,7 @@ export default function Index() {
 
         <View style={styles.chart}>
           <ThemedText variant="subtitle" style={styles.chartTitle}>
-            {activeTab === 'Progesterone' ? 'Progesterone Levels' : 'Cortisol Levels'}
+            {activeTab === 'Vitals' ? 'Vitals Levels' : 'BloodPressure Levels'}
           </ThemedText>
           <LineChart
             data={{
@@ -375,9 +376,9 @@ export default function Index() {
           />
           <View style={styles.analyticsSection}>
             <ThemedText variant="body" style={styles.analyticsText}>
-              {activeTab === 'Progesterone' 
-                ? 'Progesterone levels are within normal range'
-                : 'Cortisol levels are within normal range'}
+              {activeTab === 'Vitals' 
+                ? 'Vitals levels are within normal range'
+                : 'BloodPressure levels are within normal range'}
             </ThemedText>
           </View>
         </View>
