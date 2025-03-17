@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F4FF',
+    paddingTop: 50,
   },
   reactLogo: {
     width: 100,
@@ -337,6 +338,9 @@ export default function Index() {
         <Text style={styles.measurementUnit}>ng/ml</Text>
 
         <View style={styles.chart}>
+          <ThemedText variant="subtitle" style={styles.chartTitle}>
+            {activeTab === 'Progesterone' ? 'Progesterone Levels' : 'Cortisol Levels'}
+          </ThemedText>
           <LineChart
             data={{
               labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
@@ -344,7 +348,7 @@ export default function Index() {
                 data: getCurrentDataset()
               }]
             }}
-            width={300}
+            width={width - 64}
             height={200}
             chartConfig={{
               backgroundColor: '#fff',
@@ -352,6 +356,13 @@ export default function Index() {
               backgroundGradientTo: '#fff',
               decimalPlaces: 0,
               color: (opacity = 1) => `rgba(81, 150, 244, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              strokeWidth: 2,
+              propsForDots: {
+                r: '6',
+                strokeWidth: '2',
+                stroke: '#fff'
+              },
               style: {
                 borderRadius: 16
               }
@@ -362,6 +373,13 @@ export default function Index() {
               borderRadius: 16
             }}
           />
+          <View style={styles.analyticsSection}>
+            <ThemedText variant="body" style={styles.analyticsText}>
+              {activeTab === 'Progesterone' 
+                ? 'Progesterone levels are within normal range'
+                : 'Cortisol levels are within normal range'}
+            </ThemedText>
+          </View>
         </View>
       </LinearGradient>
 

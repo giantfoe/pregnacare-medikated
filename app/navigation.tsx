@@ -13,6 +13,7 @@ export default function Navigation() {
       screenOptions={{
         tabBarActiveTintColor: '#4CAF50',
         tabBarInactiveTintColor: 'gray',
+        headerShown: false
       }}>
       <Tab.Screen
         name="Home"

@@ -21,7 +21,7 @@ interface CartScreenProps {
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
   },
   container: {
     flex: 1,
@@ -176,7 +176,7 @@ export default function CartScreen({ visible, onClose, items, onUpdateQuantity, 
           <View style={styles.footer}>
             <View style={styles.totalContainer}>
               <ThemedText variant="subtitle">Total</ThemedText>
-              <ThemedText variant="subtitle">£{total.toFixed(2)}</ThemedText>
+              <ThemedText variant="subtitle">Le {total.toFixed(2)}</ThemedText>
             </View>
             <TouchableOpacity style={styles.checkoutButton}>
               <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>

@@ -6,9 +6,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { LineChart } from 'react-native-chart-kit';
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8F9FF',
+    paddingTop: 80,
+  },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(108, 99, 255, 0.1)',
+    backgroundColor: 'rgba(255, 255, 255, 0.97)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -79,7 +84,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F9FF',
-    padding: 16,
+    padding: 15,
+    paddingTop: 50,
   },
   header: {
     flexDirection: 'row',
@@ -161,10 +167,13 @@ const styles = StyleSheet.create({
 });
 
 export default function TrackerScreen() {
-  const [activeTab, setActiveTab] = useState('progesterone');
+  const [activeTab, setActiveTab] = useState('vitals');
   const [showAddDataModal, setShowAddDataModal] = useState(false);
   const [formData, setFormData] = useState({
     weight: '',
+    heartRate: '',
+    bloodPressureSystolic: '',
+    bloodPressureDiastolic: '',
     mood: '',
     symptoms: '',
     notes: ''
@@ -200,7 +209,7 @@ export default function TrackerScreen() {
         animationType="slide"
         transparent={true}>
         <View style={styles.modalContainer}>
-          <ThemedView variant="card" style={styles.modalContent}>
+          <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false}>
             <ThemedText variant="title" style={styles.modalTitle}>Add New Entry</ThemedText>
             
             <View style={styles.inputContainer}>
@@ -212,6 +221,37 @@ export default function TrackerScreen() {
                 keyboardType="decimal-pad"
                 placeholder="Enter your weight"
               />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <ThemedText variant="subtitle" style={styles.inputLabel}>Heart Rate (bpm)</ThemedText>
+              <TextInput
+                style={styles.input}
+                value={formData.heartRate}
+                onChangeText={(text) => setFormData({...formData, heartRate: text})}
+                keyboardType="decimal-pad"
+                placeholder="Enter your heart rate"
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <ThemedText variant="subtitle" style={styles.inputLabel}>Blood Pressure (mmHg)</ThemedText>
+              <View style={{flexDirection: 'row', gap: 8}}>
+                <TextInput
+                  style={[styles.input, {flex: 1}]}
+                  value={formData.bloodPressureSystolic}
+                  onChangeText={(text) => setFormData({...formData, bloodPressureSystolic: text})}
+                  keyboardType="decimal-pad"
+                  placeholder="Systolic"
+                />
+                <TextInput
+                  style={[styles.input, {flex: 1}]}
+                  value={formData.bloodPressureDiastolic}
+                  onChangeText={(text) => setFormData({...formData, bloodPressureDiastolic: text})}
+                  keyboardType="decimal-pad"
+                  placeholder="Diastolic"
+                />
+              </View>
             </View>
 
             <View style={styles.inputContainer}>
@@ -260,40 +300,63 @@ export default function TrackerScreen() {
                 <ThemedText variant="body" style={styles.buttonText}>Save</ThemedText>
               </TouchableOpacity>
             </View>
-          </ThemedView>
+          </ScrollView>
         </View>
       </Modal>
 
       <View style={styles.card}>
         <View style={styles.tabContainer}>
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'progesterone' && styles.activeTab]}
-            onPress={() => setActiveTab('progesterone')}
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'vitals' && styles.activeTab]}
+            onPress={() => setActiveTab('vitals')}
           >
-            <ThemedText variant="body" style={[styles.tabText, activeTab === 'progesterone' && styles.activeTabText]}>Progesterone</ThemedText>
+            <Text style={[styles.tabText, activeTab === 'vitals' && styles.activeTabText]}>Vitals</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'cortisol' && styles.activeTab]}
-            onPress={() => setActiveTab('cortisol')}
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'blood-pressure' && styles.activeTab]}
+            onPress={() => setActiveTab('blood-pressure')}
           >
-            <ThemedText variant="body" style={[styles.tabText, activeTab === 'cortisol' && styles.activeTabText]}>Cortisol</ThemedText>
+            <Text style={[styles.tabText, activeTab === 'blood-pressure' && styles.activeTabText]}>Blood Pressure</Text>
           </TouchableOpacity>
         </View>
 
-        <ThemedText variant="title" style={styles.measurementValue}>
-          {activeTab === 'progesterone' ? '2,361' : '200,23'}
-        </ThemedText>
-        <ThemedText variant="caption" style={styles.measurementUnit}>ng/ml</ThemedText>
-
+        <ThemedView variant="card" style={styles.card}>
+          {activeTab === 'vitals' ? (
+            <>
+              <ThemedText variant="subtitle">Heart Rate</ThemedText>
+              <Text style={styles.measurementValue}>75 <Text style={styles.measurementUnit}>bpm</Text></Text>
+              <ThemedText variant="caption">Last updated: Today 9:00 AM</ThemedText>
+            </>
+          ) : (
+            <>
+              <ThemedText variant="subtitle">Blood Pressure</ThemedText>
+              <Text style={styles.measurementValue}>120/80 <Text style={styles.measurementUnit}>mmHg</Text></Text>
+              <ThemedText variant="caption">Last updated: Today 9:00 AM</ThemedText>
+            </>
+          )}
+        </ThemedView>
         <View style={styles.chart}>
           <LineChart
             data={{
               labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-              datasets: [{
-                data: activeTab === 'progesterone' 
-                  ? [20, 45, 28, 80, 99, 43, 50]
-                  : [15, 35, 25, 45, 40, 30, 20]
-              }]
+              datasets: activeTab === 'vitals' ? [
+                {
+                  data: [72, 75, 73, 76, 74, 75, 73],
+                  color: (opacity = 1) => `rgba(81, 150, 244, ${opacity})`,
+                  strokeWidth: 2
+                }
+              ] : [
+                {
+                  data: [120, 118, 122, 119, 121, 120, 118],
+                  color: (opacity = 1) => `rgba(235, 87, 87, ${opacity})`,
+                  strokeWidth: 2
+                },
+                {
+                  data: [80, 82, 78, 81, 79, 80, 81],
+                  color: (opacity = 1) => `rgba(47, 128, 237, ${opacity})`,
+                  strokeWidth: 2
+                }
+              ]
             }}
             width={300}
             height={200}
@@ -303,26 +366,43 @@ export default function TrackerScreen() {
               backgroundGradientTo: '#fff',
               decimalPlaces: 0,
               color: (opacity = 1) => `rgba(81, 150, 244, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
               style: {
                 borderRadius: 16
-              }
+              },
+              propsForDots: {
+                r: '6',
+                strokeWidth: '2',
+                stroke: '#fff'
+              },
+              propsForLabels: {
+                fontSize: 12
+              },
+              formatYLabel: (value) => `${value}${activeTab === 'vitals' ? 'bpm' : ''}`
             }}
             bezier
             style={{
               marginVertical: 8,
               borderRadius: 16
             }}
+            legend={activeTab === 'blood-pressure' ? ['Systolic', 'Diastolic'] : undefined}
+            withDots={true}
+            withShadow={false}
+            withInnerLines={true}
+            withOuterLines={true}
+            withVerticalLines={false}
+            withHorizontalLines={true}
           />
         </View>
 
         <View style={styles.analyticsSection}>
           <ThemedText variant="subtitle" style={styles.analyticsTitle}>
-            {activeTab === 'progesterone' ? 'Progesterone Analytics' : 'Cortisol Analytics'}
+            {activeTab === 'vitals' ? 'Heart Rate Analytics' : 'Blood Pressure Analytics'}
           </ThemedText>
           <ThemedText variant="body" style={styles.analyticsText}>
-            {activeTab === 'progesterone' 
-              ? 'Progesterone level is normal'
-              : 'Cortisol level is normal'}
+            {activeTab === 'vitals' 
+              ? 'Heart rate is within normal range'
+              : 'Blood pressure is within normal range'}
           </ThemedText>
         </View>
       </View>
