@@ -220,6 +220,14 @@ const styles = StyleSheet.create({
 export default function Index() {
   const [activeTab, setActiveTab] = useState('Progesterone');
   const fadeAnim = useState(new Animated.Value(0))[0];
+  const [trackingData, setTrackingData] = useState({
+    progesterone: [20, 45, 28, 80, 99, 43, 50],
+    cortisol: [30, 55, 38, 70, 89, 53, 60],
+    weight: [],
+    mood: [],
+    symptoms: [],
+    notes: []
+  });
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -228,6 +236,52 @@ export default function Index() {
       useNativeDriver: true,
     }).start();
   }, []);
+
+  // Listen for tracking data updates using React Native's event system
+  useEffect(() => {
+    const handleDataSave = (newData) => {
+      if (newData) {
+        try {
+          if (newData.weight && newData.mood && newData.symptoms) {
+            updateTrackingData(newData);
+          }
+        } catch (error) {
+          console.error('Error parsing tracking data:', error);
+        }
+      }
+    };
+
+    // You can implement your own event system here
+    // For example, using React Native's EventEmitter or state management
+    // This is a placeholder for the actual implementation
+    const unsubscribe = () => {};
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, []);
+
+  // Update tracking data when new data is saved
+  const updateTrackingData = (newData) => {
+    const weightValue = parseFloat(newData.weight) || 0;
+    setTrackingData(prevData => ({
+      ...prevData,
+      progesterone: [...prevData.progesterone, weightValue],
+      weight: [...prevData.weight, weightValue],
+      mood: [...prevData.mood, newData.mood],
+      symptoms: [...prevData.symptoms, newData.symptoms],
+      notes: [...prevData.notes, newData.notes]
+    }));
+  };
+
+  // Get the current dataset based on active tab
+  const getCurrentDataset = () => {
+    return activeTab.toLowerCase() === 'progesterone' ? 
+      trackingData.progesterone : trackingData.cortisol;
+  };
+
   return (
     <Animated.ScrollView 
       style={[styles.container, { opacity: fadeAnim }]}
@@ -244,7 +298,7 @@ export default function Index() {
           />
           <View>
             <Text style={[styles.greeting, { color: '#000000' }]}>Welcome back</Text>
-            <Text style={[styles.userName, { color: '#000000' }]}>Allessandra Wins</Text>
+            <Text style={[styles.userName, { color: '#000000' }]}>Mariama Kamara</Text>
           </View>
         </View>
         <View style={{ flexDirection: 'row' }}>
@@ -287,7 +341,7 @@ export default function Index() {
             data={{
               labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
               datasets: [{
-                data: [20, 45, 28, 80, 99, 43, 50]
+                data: getCurrentDataset()
               }]
             }}
             width={300}

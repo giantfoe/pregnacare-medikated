@@ -239,7 +239,7 @@ export default function ShopScreen() {
               <View style={styles.productInfo}>
                 <Text style={styles.productTitle}>{product.title}</Text>
                 <Text style={styles.productDescription}>{product.description}</Text>
-                <Text style={styles.price}>£{product.price.toFixed(2)}</Text>
+                <Text style={styles.price}>Le{product.price.toFixed(2)}</Text>
                 <TouchableOpacity 
                   style={styles.buyButton}
                   onPress={() => {
