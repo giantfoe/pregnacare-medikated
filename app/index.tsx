@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import HelloWave from '../components/HelloWave';
-import ParallaxScrollView from '../components/ParallaxScrollView';
-import ThemedText from '../components/ui/ThemedText';
-import ThemedView from '../components/ui/ThemedView';
-import IconSymbol from '../components/ui/IconSymbol';
-import { ScrollView, Text, View, StyleSheet, TouchableOpacity, Image, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Animated, Dimensions, ScrollView, RefreshControl } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { LinearGradient } from 'expo-linear-gradient';
+import ThemedText from '../components/ui/ThemedText';
+import IconSymbol from '../components/ui/IconSymbol';
 
 const { width } = Dimensions.get('window');
 
@@ -14,13 +11,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F4FF',
-    padding: 1,
     paddingTop: 50,
-  },
-  reactLogo: {
-    width: 100,
-    height: 100,
-    resizeMode: 'contain',
   },
   header: {
     padding: 20,
@@ -141,27 +132,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontFamily: 'System',
   },
-  chartLegend: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+  analyticsSection: {
     marginTop: 16,
   },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 8,
-  },
-  legendDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 4,
-  },
-  legendText: {
-    fontSize: 12,
-    color: '#4A4A4A',
-    fontFamily: 'System',
+  analyticsText: {
+    color: '#666',
+    fontSize: 14,
+    marginBottom: 8,
   },
   calendar: {
     backgroundColor: '#fff',
@@ -221,6 +198,7 @@ const styles = StyleSheet.create({
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState('Vitals');
+  const [refreshing, setRefreshing] = useState(false);
   const fadeAnim = useState(new Animated.Value(0))[0];
   const [trackingData, setTrackingData] = useState({
     Vitals: [20, 45, 28, 80, 99, 43, 50],
@@ -228,10 +206,10 @@ export default function Index() {
     weight: [],
     mood: [],
     symptoms: [],
-    notes: []
+    notes: [],
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
@@ -239,60 +217,38 @@ export default function Index() {
     }).start();
   }, []);
 
-  // Listen for tracking data updates using React Native's event system
-  useEffect(() => {
-    const handleDataSave = (newData) => {
-      if (newData) {
-        try {
-          if (newData.weight && newData.mood && newData.symptoms) {
-            updateTrackingData(newData);
-          }
-        } catch (error) {
-          console.error('Error parsing tracking data:', error);
-        }
-      }
-    };
-
-    // You can implement your own event system here
-    // For example, using React Native's EventEmitter or state management
-    // This is a placeholder for the actual implementation
-    const unsubscribe = () => {};
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, []);
-
-  // Update tracking data when new data is saved
-  const updateTrackingData = (newData) => {
-    const weightValue = parseFloat(newData.weight) || 0;
-    setTrackingData(prevData => ({
-      ...prevData,
-      Vitals: [...prevData.Vitals, weightValue],
-      weight: [...prevData.weight, weightValue],
-      mood: [...prevData.mood, newData.mood],
-      symptoms: [...prevData.symptoms, newData.symptoms],
-      notes: [...prevData.notes, newData.notes]
-    }));
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
   };
 
-  // Get the current dataset based on active tab
   const getCurrentDataset = () => {
-    return activeTab.toLowerCase() === 'Vitals' ? 
-      trackingData.Vitals : trackingData.BloodPressure;
+    return activeTab.toLowerCase() === 'vitals'
+      ? trackingData.Vitals
+      : trackingData.BloodPressure;
   };
 
   return (
-    <Animated.ScrollView 
+    <Animated.ScrollView
       style={[styles.container, { opacity: fadeAnim }]}
-      showsVerticalScrollIndicator={false}>
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          colors={['#6C63FF']}
+          progressBackgroundColor="#F0F4FF"
+        />
+      }
+      showsVerticalScrollIndicator={false}
+    >
       <LinearGradient
         colors={['#6C63FF', '#8A84FF']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        style={styles.header}>
+        style={styles.header}
+      >
         <View style={styles.userInfo}>
           <Image
             style={styles.avatar}
@@ -304,13 +260,13 @@ export default function Index() {
           </View>
         </View>
         <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.iconButton, { backgroundColor: 'rgb(0, 0, 0)' }]}
             onPress={() => {}}
           >
             <IconSymbol name="🔔" size={24} color="#FFFFFF" />
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.iconButton, { backgroundColor: 'rgb(0, 0, 0)' }]}
             onPress={() => {}}
           >
@@ -319,18 +275,20 @@ export default function Index() {
         </View>
       </LinearGradient>
 
-      <LinearGradient
-        colors={['#fff', '#F8F9FF']}
-        style={styles.card}>
+      <LinearGradient colors={['#fff', '#F8F9FF']} style={styles.card}>
         <View style={styles.tabContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.tab, activeTab === 'Vitals' && styles.activeTab]}
-            onPress={() => setActiveTab('Vitals')}>
-            <Text style={[styles.tabText, styles.activeTabText]}>Vitals</Text>
+            onPress={() => setActiveTab('Vitals')}
+          >
+            <Text style={[styles.tabText, activeTab === 'Vitals' && styles.activeTabText]}>
+              Vitals
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.tab, activeTab === 'BloodPressure' && styles.activeTab]}
-            onPress={() => setActiveTab('BloodPressure')}>
+            onPress={() => setActiveTab('BloodPressure')}
+          >
             <Text style={styles.tabText}>BloodPressure</Text>
           </TouchableOpacity>
         </View>
@@ -345,9 +303,11 @@ export default function Index() {
           <LineChart
             data={{
               labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-              datasets: [{
-                data: getCurrentDataset()
-              }]
+              datasets: [
+                {
+                  data: getCurrentDataset(),
+                },
+              ],
             }}
             width={width - 64}
             height={200}
@@ -362,21 +322,21 @@ export default function Index() {
               propsForDots: {
                 r: '6',
                 strokeWidth: '2',
-                stroke: '#fff'
+                stroke: '#fff',
               },
               style: {
-                borderRadius: 16
-              }
+                borderRadius: 16,
+              },
             }}
             bezier
             style={{
               marginVertical: 8,
-              borderRadius: 16
+              borderRadius: 16,
             }}
           />
           <View style={styles.analyticsSection}>
             <ThemedText variant="body" style={styles.analyticsText}>
-              {activeTab === 'Vitals' 
+              {activeTab === 'Vitals'
                 ? 'Vitals levels are within normal range'
                 : 'BloodPressure levels are within normal range'}
             </ThemedText>
