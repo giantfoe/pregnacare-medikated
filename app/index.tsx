@@ -15,6 +15,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F0F4FF',
   },
+  reactLogo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
   header: {
     padding: 20,
     flexDirection: 'row',

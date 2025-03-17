@@ -22,7 +22,7 @@ const IconSymbol: React.FC<IconSymbolProps> = ({
       case '♡':
         return 'heart-outline';
       default:
-        return 'help-outline';
+        return 'cart-outline';
     }
   };
 
