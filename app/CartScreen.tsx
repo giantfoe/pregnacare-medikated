@@ -2,6 +2,7 @@ import React from 'react';
 import { View, ScrollView, StyleSheet, TouchableOpacity, Modal, Text } from 'react-native';
 import ThemedView from '../components/ui/ThemedView';
 import ThemedText from '../components/ui/ThemedText';
+import { useRouter } from 'expo-router';
 
 interface CartItem {
   id: number;
@@ -121,7 +122,19 @@ const styles = StyleSheet.create({
 });
 
 export default function CartScreen({ visible, onClose, items, onUpdateQuantity, onRemoveItem }: CartScreenProps) {
+  const router = useRouter();
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handleCheckout = () => {
+    // First close the modal
+    onClose();
+    
+    // Use a timeout to ensure the modal is closed before navigation
+    setTimeout(() => {
+      // Use the correct navigation method for Expo Router
+      router.navigate('checkout');
+    }, 300);
+  };
 
   return (
     <Modal
@@ -144,7 +157,7 @@ export default function CartScreen({ visible, onClose, items, onUpdateQuantity, 
               <View key={item.id} style={styles.cartItem}>
                 <View style={styles.itemInfo}>
                   <Text style={styles.itemTitle}>{item.title}</Text>
-                  <Text style={styles.itemPrice}>£{(item.price * item.quantity).toFixed(2)}</Text>
+                  <Text style={styles.itemPrice}>Le {(item.price * item.quantity).toFixed(2)}</Text>
                   
                   <View style={styles.quantityContainer}>
                     <TouchableOpacity
@@ -178,7 +191,7 @@ export default function CartScreen({ visible, onClose, items, onUpdateQuantity, 
               <ThemedText variant="subtitle">Total</ThemedText>
               <ThemedText variant="subtitle">Le {total.toFixed(2)}</ThemedText>
             </View>
-            <TouchableOpacity style={styles.checkoutButton}>
+            <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
               <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
             </TouchableOpacity>
           </View>
