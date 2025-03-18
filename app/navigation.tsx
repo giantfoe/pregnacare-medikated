@@ -4,6 +4,7 @@ import HomeScreen from './HomeScreen';
 import TrackerScreen from './TrackerScreen';
 import ShopScreen from './ShopScreen';
 import CommunityScreen from './CommunityScreen';
+import EducationScreen from './education';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,6 +23,16 @@ export default function Navigation() {
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Education"
+        component={EducationScreen}
+        options={{
+          tabBarLabel: 'Learn',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="school" color={color} size={size} />
           ),
         }}
       />

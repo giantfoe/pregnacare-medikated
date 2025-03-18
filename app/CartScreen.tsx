@@ -131,9 +131,11 @@ export default function CartScreen({ visible, onClose, items, onUpdateQuantity, 
     
     // Use a timeout to ensure the modal is closed before navigation
     setTimeout(() => {
-      // Use the correct navigation method for Expo Router
-      router.navigate('checkout');
-    }, 300);
+      // Try a different navigation approach
+      router.navigate({
+        pathname: 'checkout' as any,
+      });
+    }, 800); // Increased timeout further
   };
 
   return (
