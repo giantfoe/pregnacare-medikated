@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Animated, Dimensions, 
 import { LineChart } from 'react-native-chart-kit';
 import { LinearGradient } from 'expo-linear-gradient';
 import ThemedText from '../components/ui/ThemedText';
+import ThemedView from '../components/ui/ThemedView';
 import IconSymbol from '../components/ui/IconSymbol';
 
 const { width } = Dimensions.get('window');
@@ -21,10 +22,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    shadowColor: '#6C63FF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    boxShadow: '0px 4px 8px rgba(108, 99, 255, 0.1)',
     elevation: 4,
   },
   userInfo: {
@@ -59,10 +57,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 12,
-    shadowColor: '#6C63FF',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    boxShadow: '0px 2px 4px rgba(108, 99, 255, 0.1)',
     elevation: 2,
   },
   card: {
@@ -70,10 +65,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 16,
     margin: 10,
-    shadowColor: '#6C63FF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
+    boxShadow: '0px 4px 12px rgba(108, 99, 255, 0.15)',
     elevation: 5,
   },
   tabContainer: {
@@ -119,10 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 16,
-    shadowColor: '#6C63FF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    boxShadow: '0px 4px 8px rgba(108, 99, 255, 0.1)',
     elevation: 3,
   },
   chartTitle: {
@@ -135,6 +124,13 @@ const styles = StyleSheet.create({
   analyticsSection: {
     marginTop: 16,
   },
+  analyticsTitle: {  // Add this new style
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
+    fontFamily: 'System',
+  },
   analyticsText: {
     color: '#666',
     fontSize: 14,
@@ -145,10 +141,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 24,
     margin: 16,
-    shadowColor: '#6C63FF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
+    boxShadow: '0px 4px 12px rgba(108, 99, 255, 0.1)',
     elevation: 4,
   },
   calendarHeader: {
@@ -194,10 +187,65 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontFamily: 'System',
   },
+  calendarSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+    fontFamily: 'System',
+  },
+  addButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#6C63FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: '500',
+  },
+  medicationInfo: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  medicationDosage: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 2,
+  },
+  medicationTimeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  medicationSchedule: {
+    fontSize: 12,
+    color: '#4A41FF',
+    fontWeight: '500',
+  },
+  takeButton: {
+    backgroundColor: '#6C63FF15',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  takeButtonText: {
+    color: '#6C63FF',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  medicationIconText: {
+    fontSize: 20,
+  },
 });
 
 export default function Index() {
-  const [activeTab, setActiveTab] = useState('Vitals');
+  // Add this state
+  const [activeTab, setActiveTab] = useState('vitals');
+  
   const [refreshing, setRefreshing] = useState(false);
   const fadeAnim = useState(new Animated.Value(0))[0];
   const [trackingData, setTrackingData] = useState({
@@ -234,14 +282,8 @@ export default function Index() {
     <Animated.ScrollView
       style={[styles.container, { opacity: fadeAnim }]}
       refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          colors={['#6C63FF']}
-          progressBackgroundColor="#F0F4FF"
-        />
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
-      showsVerticalScrollIndicator={false}
     >
       <LinearGradient
         colors={['#6C63FF', '#8A84FF']}
@@ -275,41 +317,74 @@ export default function Index() {
         </View>
       </LinearGradient>
 
-      <LinearGradient colors={['#fff', '#F8F9FF']} style={styles.card}>
+      {/* Replace your existing card with this new section */}
+      <View style={styles.card}>
         <View style={styles.tabContainer}>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'Vitals' && styles.activeTab]}
-            onPress={() => setActiveTab('Vitals')}
+            style={[styles.tab, activeTab === 'vitals' && styles.activeTab]}
+            onPress={() => setActiveTab('vitals')}
           >
-            <Text style={[styles.tabText, activeTab === 'Vitals' && styles.activeTabText]}>
+            <Text style={[styles.tabText, activeTab === 'vitals' && styles.activeTabText]}>
               Vitals
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'BloodPressure' && styles.activeTab]}
-            onPress={() => setActiveTab('BloodPressure')}
+            style={[styles.tab, activeTab === 'blood-pressure' && styles.activeTab]}
+            onPress={() => setActiveTab('blood-pressure')}
           >
-            <Text style={styles.tabText}>BloodPressure</Text>
+            <Text style={[styles.tabText, activeTab === 'blood-pressure' && styles.activeTabText]}>
+              Blood Pressure
+            </Text>
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.measurementValue}>2,361</Text>
-        <Text style={styles.measurementUnit}>ng/ml</Text>
+        <ThemedView variant="card" style={styles.card}>
+          {activeTab === 'vitals' ? (
+            <>
+              <ThemedText variant="subtitle">Heart Rate</ThemedText>
+              <Text style={styles.measurementValue}>
+                75 <Text style={styles.measurementUnit}>bpm</Text>
+              </Text>
+              <ThemedText variant="caption">Last updated: Today 9:00 AM</ThemedText>
+            </>
+          ) : (
+            <>
+              <ThemedText variant="subtitle">Blood Pressure</ThemedText>
+              <Text style={styles.measurementValue}>
+                120/80 <Text style={styles.measurementUnit}>mmHg</Text>
+              </Text>
+              <ThemedText variant="caption">Last updated: Today 9:00 AM</ThemedText>
+            </>
+          )}
+        </ThemedView>
 
         <View style={styles.chart}>
-          <ThemedText variant="subtitle" style={styles.chartTitle}>
-            {activeTab === 'Vitals' ? 'Vitals Levels' : 'BloodPressure Levels'}
-          </ThemedText>
           <LineChart
             data={{
               labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-              datasets: [
-                {
-                  data: getCurrentDataset(),
-                },
-              ],
+              datasets:
+                activeTab === 'vitals'
+                  ? [
+                      {
+                        data: [72, 75, 73, 76, 74, 75, 73],
+                        color: (opacity = 1) => `rgba(81, 150, 244, ${opacity})`,
+                        strokeWidth: 2,
+                      },
+                    ]
+                  : [
+                      {
+                        data: [120, 118, 122, 119, 121, 120, 118],
+                        color: (opacity = 1) => `rgba(235, 87, 87, ${opacity})`,
+                        strokeWidth: 2,
+                      },
+                      {
+                        data: [80, 82, 78, 81, 79, 80, 81],
+                        color: (opacity = 1) => `rgba(47, 128, 237, ${opacity})`,
+                        strokeWidth: 2,
+                      },
+                    ],
             }}
-            width={width - 64}
+            width={300}
             height={200}
             chartConfig={{
               backgroundColor: '#fff',
@@ -318,58 +393,89 @@ export default function Index() {
               decimalPlaces: 0,
               color: (opacity = 1) => `rgba(81, 150, 244, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              strokeWidth: 2,
+              style: {
+                borderRadius: 16,
+              },
               propsForDots: {
                 r: '6',
                 strokeWidth: '2',
                 stroke: '#fff',
               },
-              style: {
-                borderRadius: 16,
+              propsForLabels: {
+                fontSize: 12,
               },
+              formatYLabel: (value) => `${value}${activeTab === 'vitals' ? 'bpm' : ''}`,
             }}
             bezier
             style={{
               marginVertical: 8,
               borderRadius: 16,
             }}
+            withDots={true}
+            withShadow={false}
+            withInnerLines={true}
+            withOuterLines={true}
+            withVerticalLines={false}
+            withHorizontalLines={true}
           />
-          <View style={styles.analyticsSection}>
-            <ThemedText variant="body" style={styles.analyticsText}>
-              {activeTab === 'Vitals'
-                ? 'Vitals levels are within normal range'
-                : 'BloodPressure levels are within normal range'}
-            </ThemedText>
-          </View>
-        </View>
-      </LinearGradient>
-
-      <View style={styles.calendar}>
-        <View style={styles.calendarHeader}>
-          <Text style={styles.calendarTitle}>March 2024</Text>
-          <TouchableOpacity>
-            <Text></Text>
-          </TouchableOpacity>
         </View>
 
-        <View style={styles.medicationItem}>
-          <Text style={styles.medicationIcon}>💊</Text>
-          <View>
-            <Text style={styles.medicationText}>Oliderkim 2000</Text>
-            <Text style={styles.medicationTime}>1 tablet of 2000 mg</Text>
-          </View>
-          <Text>3 days</Text>
-        </View>
-
-        <View style={styles.medicationItem}>
-          <Text style={styles.medicationIcon}>💊</Text>
-          <View>
-            <Text style={styles.medicationText}>Vitamin C</Text>
-            <Text style={styles.medicationTime}>1 tablet of 500 mg</Text>
-          </View>
-          <Text>3 days</Text>
+        <View style={styles.analyticsSection}>
+          <ThemedText variant="subtitle" style={styles.analyticsTitle}>
+            {activeTab === 'vitals' ? 'Heart Rate Analytics' : 'Blood Pressure Analytics'}
+          </ThemedText>
+          <ThemedText variant="body" style={styles.analyticsText}>
+            {activeTab === 'vitals'
+              ? 'Heart rate is within normal range'
+              : 'Blood pressure is within normal range'}
+          </ThemedText>
         </View>
       </View>
+
+      {/* Updated Medication Section */}
+            <View style={styles.calendar}>
+              <View style={styles.calendarHeader}>
+                <View>
+                  <Text style={styles.calendarTitle}>Medications</Text>
+                  <Text style={styles.calendarSubtitle}>Your daily schedule</Text>
+                </View>
+                <TouchableOpacity style={styles.addButton}>
+                  <Text style={styles.addButtonText}>+</Text>
+                </TouchableOpacity>
+              </View>
+      
+              <View style={styles.medicationItem}>
+                <View style={[styles.medicationIcon, { backgroundColor: '#6C63FF' }]}>
+                  <Text style={styles.medicationIconText}>💊</Text>
+                </View>
+                <View style={styles.medicationInfo}>
+                  <Text style={styles.medicationText}>Oliderkim 2000</Text>
+                  <Text style={styles.medicationDosage}>1 tablet of 2000 mg</Text>
+                  <View style={styles.medicationTimeContainer}>
+                    <Text style={styles.medicationSchedule}>Next dose in 3 days</Text>
+                    <TouchableOpacity style={styles.takeButton}>
+                      <Text style={styles.takeButtonText}>Take Now</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+      
+              <View style={styles.medicationItem}>
+                <View style={[styles.medicationIcon, { backgroundColor: '#4A41FF' }]}>
+                  <Text style={styles.medicationIconText}>💊</Text>
+                </View>
+                <View style={styles.medicationInfo}>
+                  <Text style={styles.medicationText}>Vitamin C</Text>
+                  <Text style={styles.medicationDosage}>1 tablet of 500 mg</Text>
+                  <View style={styles.medicationTimeContainer}>
+                    <Text style={styles.medicationSchedule}>Next dose in 3 days</Text>
+                    <TouchableOpacity style={styles.takeButton}>
+                      <Text style={styles.takeButtonText}>Take Now</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
     </Animated.ScrollView>
   );
 }

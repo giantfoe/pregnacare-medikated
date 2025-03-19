@@ -30,8 +30,12 @@ yarn-error.*
 *.pem
 
 # local env files
-.env*.local 
+# Add .env to gitignore to protect sensitive keys
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # typescript
 *.tsbuildinfo

@@ -1,10 +1,29 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity, Text, Image, Linking } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, ScrollView, StyleSheet, TouchableOpacity, Text, Image, Linking, ActivityIndicator } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import ThemedText from '../components/ui/ThemedText';
 import ThemedView from '../components/ui/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
+import { supabase } from '../lib/supabase';
 
+// Define types for videos and articles
+interface Video {
+  id: number | string;
+  title: string;
+  duration: string;
+  views: string;
+  youtube_id?: string;
+  youtubeId?: string;
+}
+
+interface Article {
+  id: number | string;
+  title: string;
+  description: string;
+  url: string;
+}
+
+// Styles remain the same
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -91,42 +110,65 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginVertical: 20,
+  }
 });
 
-const educationData = {
-  videos: [
-    {
-      id: 1,
-      title: 'Understanding Your First Trimester',
-      duration: '12:34',
-      views: '10K',
-      youtubeId: 'YOUTUBE_VIDEO_ID_1',
-    },
-    {
-      id: 2,
-      title: 'Pregnancy Exercise Guide',
-      duration: '8:45',
-      views: '8.5K',
-      youtubeId: 'YOUTUBE_VIDEO_ID_2',
-    },
-  ],
-  articles: [
-    {
-      id: 1,
-      title: 'Essential Nutrients During Pregnancy',
-      description: 'Learn about the key nutrients you need during pregnancy...',
-      url: 'https://your-domain.com/article1',
-    },
-    {
-      id: 2,
-      title: 'Preparing for Labor and Delivery',
-      description: 'A comprehensive guide to preparing for childbirth...',
-      url: 'https://your-domain.com/article2',
-    },
-  ],
-};
-
 export default function EducationScreen() {
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchEducationContent();
+  }, []);
+
+  const fetchEducationContent = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Fetch videos
+      const { data: videosData, error: videosError } = await supabase
+        .from('videos')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (videosError) throw videosError;
+      
+      // Fetch articles
+      const { data: articlesData, error: articlesError } = await supabase
+        .from('articles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (articlesError) throw articlesError;
+      
+      // If no data is returned, use fallback data
+      setVideos(videosData?.length ? videosData : educationData.videos);
+      setArticles(articlesData?.length ? articlesData : educationData.articles);
+      
+    } catch (err) {
+      console.error('Error fetching education content:', err);
+      setError('Failed to load content. Please try again later.');
+      // Use fallback data on error
+      setVideos(educationData.videos);
+      setArticles(educationData.articles);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleVideoPress = (youtubeId: string) => {
     Linking.openURL(`https://www.youtube.com/watch?v=${youtubeId}`);
   };
@@ -134,6 +176,15 @@ export default function EducationScreen() {
   const handleArticlePress = (url: string) => {
     Linking.openURL(url);
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6C63FF" />
+        <Text style={{ marginTop: 10 }}>Loading education content...</Text>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -150,15 +201,17 @@ export default function EducationScreen() {
           </TouchableOpacity>
         </View>
 
+        {error && <Text style={styles.errorText}>{error}</Text>}
+
         <ThemedText variant="title" style={{ marginBottom: 16 }}>
           Featured Videos
         </ThemedText>
         
-        {educationData.videos.map((video) => (
+        {videos.map((video) => (
           <TouchableOpacity 
             key={video.id} 
             style={styles.videoCard}
-            onPress={() => handleVideoPress(video.youtubeId)}
+            onPress={() => handleVideoPress(video.youtube_id || video.youtubeId || '')}
           >
             <View style={styles.videoThumbnailContainer}>
               <View style={[styles.videoThumbnail, { backgroundColor: '#E0E0E0' }]} />
@@ -180,7 +233,7 @@ export default function EducationScreen() {
           Recommended Articles
         </ThemedText>
 
-        {educationData.articles.map((article) => (
+        {articles.map((article) => (
           <TouchableOpacity 
             key={article.id} 
             style={styles.articleCard}
@@ -195,3 +248,44 @@ export default function EducationScreen() {
     </>
   );
 }
+
+// Fallback data in case Supabase connection fails
+const educationData = {
+  videos: [
+    {
+      id: 1,
+      title: 'First Trimester of Pregnancy | What to Expect',
+      duration: '10:21',
+      views: '2.3M',
+      youtubeId: 'WO7Oa2XVPc4',
+    },
+    {
+      id: 2,
+      title: 'Pregnancy Diet: What to Eat and What to Avoid',
+      duration: '8:45',
+      views: '1.5M',
+      youtubeId: 'TLvHMNGVeFM',
+    },
+    {
+      id: 3,
+      title: 'Safe Pregnancy Exercises for Each Trimester',
+      duration: '15:32',
+      views: '987K',
+      youtubeId: 'HKHlCuBqSjE',
+    },
+  ],
+  articles: [
+    {
+      id: 1,
+      title: 'Essential Nutrients During Pregnancy',
+      description: 'Learn about the key nutrients you need during pregnancy from trusted medical sources.',
+      url: 'https://www.mayoclinic.org/healthy-lifestyle/pregnancy-week-by-week/in-depth/prenatal-care/art-20045302',
+    },
+    {
+      id: 2,
+      title: 'Preparing for Labor and Delivery',
+      description: 'A comprehensive guide to preparing for childbirth from medical professionals.',
+      url: 'https://www.nichd.nih.gov/health/topics/labor-delivery/topicinfo/prepare',
+    },
+  ],
+};

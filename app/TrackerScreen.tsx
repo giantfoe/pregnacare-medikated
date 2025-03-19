@@ -4,6 +4,9 @@ import ThemedText from '../components/ui/ThemedText';
 import ThemedView from '../components/ui/ThemedView';
 import { LineChart } from 'react-native-chart-kit';
 
+// First, add these new styles to your StyleSheet
+// Update these styles
+// Add these new styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -95,7 +98,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 16,
-    padding: 16,
+    padding: 20,
     marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -149,6 +152,133 @@ const styles = StyleSheet.create({
     color: '#666',
     fontSize: 14,
     marginBottom: 8,
+  },
+  tipsCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 24,
+    marginTop: 20,
+    shadowColor: '#6C63FF',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 24,
+    elevation: 8,
+  },
+  tipsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  tipsTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    letterSpacing: -0.5,
+  },
+  tipsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  tipCard: {
+    width: '48%',
+    backgroundColor: '#F8F9FF',
+    borderRadius: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#6C63FF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  tipCardHighlight: {
+    backgroundColor: '#6C63FF',
+  },
+  tipCardText: {
+    fontSize: 16,
+    color: '#4A5568',
+    lineHeight: 22,
+    fontWeight: '500',
+  },
+  tipCardTextHighlight: {
+    color: '#FFFFFF',
+  },
+  
+  // Timeline related styles
+  timelineCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#6C63FF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  weekInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  weekNumber: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#6C63FF',
+  },
+  weekLabel: {
+    fontSize: 16,
+    color: '#6B7280',
+    marginLeft: 8,
+  },
+  
+  // Info card styles
+  infoCard: {
+    backgroundColor: '#F8F9FF',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#4B5563',
+    lineHeight: 20,
+  },
+  
+  // Add these new styles for fruit size and tips
+  fruitSize: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  fruitEmoji: {
+    fontSize: 24,
+    marginRight: 8,
+  },
+  tipContainer: {
+    marginTop: 8,
+  },
+  tipItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  tipText: {
+    fontSize: 14,
+    color: '#4B5563',
+    lineHeight: 20,
   },
 });
 
@@ -438,7 +568,92 @@ export default function TrackerScreen() {
               : 'Blood pressure is within normal range'}
           </ThemedText>
         </View>
+
+        <View style={styles.timelineCard}>
+          <View style={styles.weekInfo}>
+            <Text style={styles.weekNumber}>12</Text>
+            <Text style={styles.weekLabel}>Weeks of your incredible journey</Text>
+          </View>
+
+          <View style={styles.infoCard}>
+            <Text style={styles.infoTitle}>Current Status</Text>
+            <Text style={styles.infoText}>
+              Welcome to your second trimester! Your energy levels are rising, and those challenging morning sickness days are fading away. Your pregnancy glow is just beginning.
+            </Text>
+          </View>
+
+          <View style={styles.infoCard}>
+            <Text style={styles.infoTitle}>Development Update</Text>
+            <Text style={styles.infoText}>
+              Your baby is experiencing a remarkable growth phase, developing new movements and reflexes.
+            </Text>
+            <View style={styles.fruitSize}>
+              <Text style={styles.fruitEmoji}>🍊</Text>
+              <Text style={styles.infoText}>Currently the size of a sweet orange (2.5 inches)</Text>
+            </View>
+          </View>
+
+          <View style={styles.infoCard}>
+            <Text style={styles.infoTitle}>Weekly Guidance</Text>
+            <View style={styles.tipContainer}>
+              <View style={styles.tipItem}>
+                <Text style={styles.tipText}>Maintain hydration with 8-10 glasses of water daily</Text>
+              </View>
+              <View style={styles.tipItem}>
+                <Text style={styles.tipText}>Include gentle prenatal exercises in your routine</Text>
+              </View>
+              <View style={styles.tipItem}>
+                <Text style={styles.tipText}>Create a pregnancy milestone journal</Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </View>
     </ScrollView>
   );
 }
+
+{/* Remove the old tips section from infoCard and add this new section after the timelineCard */}
+        <View style={styles.tipsCard}>
+          <View style={styles.tipsHeader}>
+            <Text style={styles.tipsTitle}>Your Weekly Guide</Text>
+          </View>
+          
+          <View style={styles.tipsGrid}>
+            <View style={[styles.tipCard, styles.tipCardHighlight]}>
+              <Text style={[styles.tipCardText, styles.tipCardTextHighlight]}>
+                Stay hydrated with 8-10 glasses of water daily
+              </Text>
+            </View>
+            
+            <View style={styles.tipCard}>
+              <Text style={styles.tipCardText}>
+                Practice gentle prenatal yoga for flexibility
+              </Text>
+            </View>
+            
+            <View style={styles.tipCard}>
+              <Text style={styles.tipCardText}>
+                Take daily prenatal vitamins
+              </Text>
+            </View>
+            
+            <View style={styles.tipCard}>
+              <Text style={styles.tipCardText}>
+                Track your baby's movements
+              </Text>
+            </View>
+            
+            <View style={styles.tipCard}>
+              <Text style={styles.tipCardText}>
+                Get 8 hours of quality sleep
+              </Text>
+            </View>
+            
+            <View style={styles.tipCard}>
+              <Text style={styles.tipCardText}>
+                Schedule your next checkup
+              </Text>
+            </View>
+          </View>
+        </View>

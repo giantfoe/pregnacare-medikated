@@ -174,6 +174,24 @@ export default function ShopScreen() {
       image: require('../assets/images/vita3.jpeg'),
       category: 'postnatal',
     },
+    {
+      id: 5,
+      title: 'Pregnacare Max',
+      description: 'Advanced pregnancy supplement with enhanced folic acid and vitamin D3',
+      price: 39.99,
+      image: require('../assets/images/vita3.jpeg'),
+      category: 'pregnancy',
+      badge: 'Premium',
+    },
+    {
+      id: 6,
+      title: 'Pregnacare Plus Omega',
+      description: 'Complete multivitamin with Omega-3 DHA for pregnancy and breastfeeding',
+      price: 44.99,
+      image: require('../assets/images/vita4e.jpeg'),
+      category: 'pregnancy',
+      badge: 'New',
+    },
   ];
 
   const filteredProducts = products.filter(product => {
