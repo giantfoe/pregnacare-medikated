@@ -44,7 +44,8 @@
         "origin": false
       },
       "eas": {
-        "projectId": "16b7be71-3aae-4d06-8b04-e7fad5f1246f"
+        "projectId": "16b7be71-3aae-4d06-8b04-e7fad5f1246f",
+        "owner": "ayorinde270"
       }
     },
     "runtimeVersion": {
